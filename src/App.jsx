@@ -1,10 +1,27 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react';
+import io from 'socket.io-client';
+
+// Establish the connection to the server
+const socket = io('http://localhost:3000');
 
 function App() {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
-  const [poll, setPoll] = useState(null); //store submitted poll
-  const [votes, setVotes] = useState([]); //Votes for each option
+  const [poll, setPoll] = useState(null); // Store submitted poll
+  const [votes, setVotes] = useState([]); // Votes for each option
+
+  useEffect(()=>{
+    // Listen for updated poll data from the server
+    socket.on('pollData', (updatedPoll) => {
+      setPoll(updatedPoll);
+      setVotes(updatedPoll.votes); // Update the votes state
+    });
+
+    // Clean up the listener on component unmount
+    return () => {
+      socket.off('pollData');
+    };
+  }, [])
 
   const handleChange = (e) => {
     setQuestion(e.target.value)
@@ -31,16 +48,20 @@ function App() {
       alert("Question and all options must be filled!");
       return;
     }
-    setPoll({ question, options });
-    setVotes(new Array(options.length).fill(0)); // Initialize votes
+    // Send the poll data to the server
+    const newPoll = { question, options, votes: new Array(options.length).fill(0) };
+    socket.emit('createPoll', newPoll); // Emit event to the server to create a new poll
     setQuestion(""); // Reset question
     setOptions(["", ""]); // Reset options
   };
 
   const handleVote = (index) => {
-    const updateVotes = [...votes];
-    updateVotes[index]++;
-    setVotes(updateVotes);
+    // Emit the vote to the server when a user selects an option
+    socket.emit('vote', index);
+
+    // const updateVotes = [...votes];
+    // updateVotes[index]++;
+    // setVotes(updateVotes);
   }
 
   return (
@@ -125,6 +146,12 @@ function App() {
                     </li>
                   ))}
                 </ul>
+                <button
+                  onClick={()=>{setPoll((prev) => !prev)}}
+                  className="mt-4 p-2 px-4 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Clear Poll
+                </button>
               </div>
             ) 
           }
