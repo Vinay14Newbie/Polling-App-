@@ -1,0 +1,33 @@
+HTTP stands for Hypertext Transfer Protocol, and it is the standard way of communicating between a web browser and a web server. HTTP is based on a request-response model, where the browser sends a request to the server, and the server sends back a response.
+
+Some of the key features of HTTP are:
+
+HTTP is stateless, which means that each request and response are independent of each other, and the server does not keep track of the browser's state.
+
+Request Methods: HTTP defines different methods (GET, POST, PUT, DELETE, etc.) to determine the type of request and the action the server should perform.
+
+Headers: HTTP headers carry additional information about the request or response, such as content type, caching directives, and cookies.
+
+Status Codes: HTTP status codes (e.g., 200, 404, 500) indicate the outcome of a request, providing meaningful information to the client.
+
+CORS stands for Cross-Origin Resource Sharing, and it is a mechanism that allows browsers to request resources from different origins (such as domains, protocols or ports) than the one that the current page is loaded from. CORS is important for security reasons because it prevents malicious websites from accessing sensitive data or performing unauthorized actions on behalf of the user. CORS is implemented by using HTTP headers that indicate which origins are allowed to access which resources, and under what conditions.
+
+WebSockets are a newer technology that allows for bidirectional communication between a web browser and a web server. WebSockets are based on a connection-oriented model, where the browser and the server establish a persistent connection that stays open until one of them closes it by eliminating the overhead of establishing new connections for each request, Websockets provide low-latency communication, enhancing the responsiveness of real-time applications. WebSockets are stateful, which means that the browser and the server can exchange data at any time, and the server can keep track of the browser's state. This enables real-time updates and interactive features in applications like chat systems, collaborative tools, and live data visualization.
+
+So why is it important to understand HTTP and WebSockets in front-end development? Well, because they have different advantages and disadvantages depending on the use case. HTTP is simple, widely supported, and compatible with caching and proxies. However, HTTP is also inefficient, verbose, and limited by the same-origin policy. WebSockets are fast, flexible, and allow for real-time communication. However, WebSockets are also complex, not fully supported by all browsers and servers, and not compatible with caching and proxies.
+
+To illustrate how these concepts work in practice, let's look at some examples. Suppose you want to create a web page that displays the current weather information for different cities around the world. You could use HTTP to fetch the data from an API (Application Programming Interface) that provides weather data, such as OpenWeatherMap. However, this would require you to send a new request every time you want to update the data, which could be inefficient and costly. A better solution would be to use web sockets to establish a connection with the API and receive updates whenever the data changes. This way, you would always have the latest information without having to poll the server repeatedly.
+
+However, there is a catch. The API that you are using might not be on the same origin as your web page. For example, your web page might be hosted on http://example.com, while the API might be on http://api.openweathermap.org. This means that you cannot simply use web sockets to connect to the API, because the browser will block the request due to the same-origin policy. This is where CORS comes in handy. The API can use CORS headers to indicate that it allows cross-origin requests from your web page, and specify what methods, headers and credentials are allowed.
+
+(Same-Origin Policy: By default, web browsers enforce the Same-Origin Policy, which restricts cross-origin requests. A request from one origin (domain, protocol, and port) to a different origin is blocked for security reasons).
+
+For example, the API might send the following headers:
+
+Access-Control-Allow-Origin: http://example.com
+
+Access-Control-Allow-Methods: GET
+
+Access-Control-Allow-Headers: Content-Type
+
+These headers mean that the API allows GET requests from http://example.com, and accepts Content-Type as a request header. With these headers in place, you can use web sockets to connect to the API and receive weather updates.
